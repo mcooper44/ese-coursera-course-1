@@ -49,8 +49,7 @@ void print_statistics(unsigned char minimum, unsigned char maximum, float mean, 
  * @return  void
  */
 
-void print_array(unsigned char *array, unsigned int counter):
-
+void print_array(unsigned char *array, unsigned int counter);
 /**
  * @brief find the median of an arbitrary array of numbers
  *
@@ -122,4 +121,3 @@ unsigned char find_minimum (unsigned char *array, unsigned int counter);
 void sort_array (unsigned char *array, unsigned int counter);
 
 #endif /* __STATS_H__ */
-
