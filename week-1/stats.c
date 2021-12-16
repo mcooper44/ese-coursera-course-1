@@ -69,9 +69,9 @@ void print_statistics(unsigned char min, unsigned char max, float mean, unsigned
 }
 
 void print_array(unsigned char *array, unsigned int counter){
-  for (int i=0;, i<counter; i++){
+  for (int i=0;i<counter; i++){
     printf("%d, ",*(array+i));
-	}
+  }
   printf("\n");
 }
 
@@ -91,8 +91,41 @@ void sort_array (unsigned char *array, unsigned int counter){
   }
 }
 
-unsigned char find_median(unsigned char *array, unsigned int counter|);
-{
-	float median=0;
-	if(counter%2==0)
-		median=(array[(n-1)/2] + array[n/2])/2.0
+unsigned char find_median(unsigned char *array, unsigned int counter){
+  float median=0;
+    if(counter%2==0)
+      median=(array[(counter-1)/2] + array[counter/2])/2.0;
+    else
+      median = array[counter/2];
+    return median;
+}
+
+float find_mean(unsigned char *array, unsigned int counter){
+  float mean = 0;
+  unsigned int adder = 0;
+  for(int i = 0; i < counter; i++){
+    adder = adder + array[i];
+  }
+  mean = adder / ((float) counter);
+  return mean;
+}
+
+unsigned char find_minimum(unsigned char *array, unsigned int counter){
+  unsigned char min = *array;
+  for (int i=1; i<counter;i++){
+  if (*(array +i) < min){
+    min = *(array +i);
+    }
+  }
+  return min;
+}
+
+unsigned char find_maximum(unsigned char *array, unsigned int counter){
+  unsigned char max = *array;
+  for (int i=1; i<counter;i++){
+  if (*(array +i) > max){
+    max = *(array +i);
+    }
+  }
+  return max;
+}
