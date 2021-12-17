@@ -23,8 +23,6 @@
  *
  */
 
-
-
 #include <stdio.h>
 #include "stats.h"
 
@@ -47,16 +45,16 @@ void main(){
 
   /* Statistics and Printing Functions Go Here */
   printf("Initial array state: \n");
-  print_array(&test, SIZE);
+  print_array(test, SIZE);
 
-  sort_array(&test, SIZE);
-  median = find_median(&test, SIZE);
-  mean = find_mean(&test, SIZE);
-  min = find_minimum(&test, SIZE);
-  max = find_maximum(&test, SIZE);
+  sort_array(test, SIZE);
+  median = find_median(test, SIZE);
+  mean = find_mean(test, SIZE);
+  min = find_minimum(test, SIZE);
+  max = find_maximum(test, SIZE);
   print_statistics(min, max, mean, median);
   printf("Final state of array after sorting: \n");
-
+  print_array(test, SIZE);
 }
 
 /* Add other Implementation File Code Here */
@@ -65,7 +63,7 @@ void print_statistics(unsigned char min, unsigned char max, float mean, unsigned
   printf("The minimum of the array is %d \n", min);
   printf("The maximum of the array is %d \n", max);
   printf("The median of the array is %d \n", median);
-  printf("The mean of the array is %d \n", mean);
+  printf("The mean of the array is %2.2f \n", mean);
 }
 
 void print_array(unsigned char *array, unsigned int counter){
