@@ -10,11 +10,13 @@
  *****************************************************************************/
 /**
  * @file  stats.h
- * @brief  function prototypes for the stats assignment
+ * @brief  function prototypes for basic stats assignment
  *
- * <Add Extended Description Here>
+ * These are prototypes for the week 1 warm up assignment for
+ * Introduction to Embedded Systems Software and Development Environments
+ * 
  *
- * @author Matt
+ * @author mcooper
  * @date December 2021 
  *
  */
@@ -38,6 +40,7 @@
  */
 
 void print_statistics(unsigned char minimum, unsigned char maximum, float mean, unsigned char median);
+
 /**
  * @brief prints an arbitrary array of numbers
  *
@@ -50,15 +53,16 @@ void print_statistics(unsigned char minimum, unsigned char maximum, float mean, 
  */
 
 void print_array(unsigned char *array, unsigned int counter);
+
 /**
  * @brief find the median of an arbitrary array of numbers
  *
+ * Finds the median of a sorted array of integers 
+ *
+ * @param array: an array of integers
+ * @param counter: the number of integers in the array
+ *
  * 
- *
- * @param 
- * @param 
- *
- * @return 
  */
 
 unsigned char find_median(unsigned char *array, unsigned int counter);
@@ -66,10 +70,10 @@ unsigned char find_median(unsigned char *array, unsigned int counter);
 /**
  * @brief find the mean of an arbitrary array of numbers
  *
- * <Add Extended Description Here>
+ *  
  *
- * @param <Add InputName> <add description here>
- * @param <Add InputName> <add description here>
+ * @param array: an array of integers
+ * @param counter: the number of elements in the array
  *
  * @return float
  */
@@ -77,32 +81,28 @@ unsigned char find_median(unsigned char *array, unsigned int counter);
 float find_mean (unsigned char *array, unsigned int counter);
 
 /**
- * @brief  finds the average of an array of numbers
+ * @brief  finds the max of an array of numbers
  *
  * 
  *
- * @param <Add InputName> <add description here>
- * @param <Add InputName> <add description here>
+ * @param array: an array of integers
+ * @param counter: the number of elements in the array
  *
  * @return float
  */
 
 unsigned char find_maximum (unsigned char *array, unsigned int counter);
 
-
 /**
- * @brief  finds the min value of an array of numbers
+ * @brief  finds the min of an array of numbers
  *
  * 
  *
- * @param <Add InputName> <add description here>
- * @param <Add InputName> <add description here>
- * @param <Add InputName> <add description here>
- * @param <Add InputName> <add description here>
+ * @param array: an array of integers
+ * @param counter: the number of elements in the array
  *
- * @return 
+ * @return float
  */
-
 
 unsigned char find_minimum (unsigned char *array, unsigned int counter);
 
@@ -113,7 +113,7 @@ unsigned char find_minimum (unsigned char *array, unsigned int counter);
  * 
  *
  * @param array:  pointer to an array
- * @param counter: 
+ * @param counter: the number of elements in the array
  *
  * @return void
  */
