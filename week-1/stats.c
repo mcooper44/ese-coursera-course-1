@@ -39,7 +39,7 @@ void main(){
                                 7,  87, 250, 230,  99,   3, 100,  90};
 
   /* These variables will hold the values returned by the functions  */
-  float mean = 0;
+  unsigned char mean = 0;
   unsigned char median = 0;
   unsigned char min = 0;
   unsigned char max = 0;
@@ -60,11 +60,11 @@ void main(){
 
 /* implementation of the protyped functions in stats.h */
 
-void print_statistics(unsigned char min, unsigned char max, float mean, unsigned char median){
+void print_statistics(unsigned char min, unsigned char max, unsigned char mean, unsigned char median){
   printf("The minimum of the array is %d \n", min);
   printf("The maximum of the array is %d \n", max);
-  printf("The median of the array is %d \n", median);
-  printf("The mean of the array is %2.2f \n", mean);
+  printf("The median of the array is %d\n", median);
+  printf("The mean of the array is %d\n\n", mean);
 }
 
 void print_array(unsigned char *array, unsigned int counter){
@@ -105,13 +105,11 @@ unsigned char find_median(unsigned char *array, unsigned int counter){
 }
 
 float find_mean(unsigned char *array, unsigned int counter){
-  float mean = 0;
   unsigned int adder = 0;
   for(int i = 0; i < counter; i++){
-    adder = adder + array[i];
+    adder += array[i];
   }
-  mean = adder / ((float) counter);
-  return mean;
+  return (unsigned char)(adder / counter); 
 }
 
 unsigned char find_minimum(unsigned char *array, unsigned int counter){
