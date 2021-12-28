@@ -24,26 +24,27 @@
  */
 
 #include <stdio.h>
-#include "stats.h"
+#include "stats.h" // prototypes of stats functions to sort, determine min, max
+		   // median of an array of numbers
 
 /* Size of the Data Set */
 #define SIZE (40)
 
 void main(){
-
+  // array of numbers to operate on
   unsigned char test[SIZE] = { 34, 201, 190, 154,   8, 194,   2,   6,
                               114, 88,   45,  76, 123,  87,  25,  23,
                               200, 122, 150, 90,   92,  87, 177, 244,
                               201,   6,  12,  60,   8,   2,   5,  67,
                                 7,  87, 250, 230,  99,   3, 100,  90};
 
-  /* Other Variable Declarations Go Here */
+  /* These variables will hold the values returned by the functions  */
   float mean = 0;
   unsigned char median = 0;
   unsigned char min = 0;
   unsigned char max = 0;
 
-  /* Statistics and Printing Functions Go Here */
+  /* calling functions defined in stats.h */
   printf("Initial array state: \n");
   print_array(test, SIZE);
 
@@ -57,7 +58,7 @@ void main(){
   print_array(test, SIZE);
 }
 
-/* Add other Implementation File Code Here */
+/* implementation of the protyped functions in stats.h */
 
 void print_statistics(unsigned char min, unsigned char max, float mean, unsigned char median){
   printf("The minimum of the array is %d \n", min);
