@@ -68,10 +68,14 @@ void print_statistics(unsigned char min, unsigned char max, float mean, unsigned
 }
 
 void print_array(unsigned char *array, unsigned int counter){
-  for (int i=0;i<counter; i++){
-    printf("%d, ",*(array+i));
+  for (int i=0;i<counter/8; i++){
+    for(int j=0;j<counter/5; j++){
+      printf("%3d   ",array[8*i+j]);
+    }
+    printf("\n");
   }
   printf("\n");
+  return;
 }
 
 void sort_array (unsigned char *array, unsigned int counter){
