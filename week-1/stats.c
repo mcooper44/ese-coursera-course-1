@@ -101,7 +101,7 @@ unsigned char find_median(unsigned char *array, unsigned int counter){
       median=(array[(counter-1)/2] + array[counter/2])/2.0;
     else
       median = array[counter/2];
-    return median;
+    return (unsigned char)(median);
 }
 
 float find_mean(unsigned char *array, unsigned int counter){
