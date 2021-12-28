@@ -26,6 +26,7 @@
 /* Add Your Declarations and Function Comments here */ 
 /**
  * @brief  prints summary statistics of the provided array
+ * 	   to std out
  *
  * This function prints the various stats determined 
  * by the other functions 
@@ -48,7 +49,7 @@ void print_statistics(unsigned char minimum, unsigned char maximum, float mean, 
  * to the terminal
  *
  * @param array: the starting point of the array to be printed
- * @param counter: 
+ * @param counter: the length of the array 
  * @return  void
  */
 
@@ -57,12 +58,16 @@ void print_array(unsigned char *array, unsigned int counter);
 /**
  * @brief find the median of an arbitrary array of numbers
  *
- * Finds the median of a sorted array of integers 
+ * Finds the median of a sorted array of integers.  The median
+ * is the number in a sorted array that is the middle value.
+ * In an even array you can find the middle value by dividing
+ * length of the array by two.  Otherwise, you will need to
+ * average the middle two values
  *
  * @param array: an array of integers
  * @param counter: the number of integers in the array
  *
- * 
+ * @return float
  */
 
 unsigned char find_median(unsigned char *array, unsigned int counter);
@@ -70,7 +75,8 @@ unsigned char find_median(unsigned char *array, unsigned int counter);
 /**
  * @brief find the mean of an arbitrary array of numbers
  *
- *  
+ * The mean is calculated by adding the values in the array
+ * and dividing that sum by the number of elements in the array
  *
  * @param array: an array of integers
  * @param counter: the number of elements in the array
@@ -83,12 +89,14 @@ float find_mean (unsigned char *array, unsigned int counter);
 /**
  * @brief  finds the max of an array of numbers
  *
- * 
+ * Iterates through the array and finds the minimum 
+ * value through an element wise comparison of each
+ * element 
  *
  * @param array: an array of integers
  * @param counter: the number of elements in the array
  *
- * @return float
+ * @return unsigned char
  */
 
 unsigned char find_maximum (unsigned char *array, unsigned int counter);
@@ -96,12 +104,14 @@ unsigned char find_maximum (unsigned char *array, unsigned int counter);
 /**
  * @brief  finds the min of an array of numbers
  *
- * 
+ * Iterates through the array and finds the maximum 
+ * value through an element wise comparison of each
+ * element 
  *
  * @param array: an array of integers
  * @param counter: the number of elements in the array
  *
- * @return float
+ * @return unsigned char
  */
 
 unsigned char find_minimum (unsigned char *array, unsigned int counter);
@@ -110,7 +120,8 @@ unsigned char find_minimum (unsigned char *array, unsigned int counter);
 /**
  * @brief sorts an arbitrary array of numbers from max to min 
  *
- * 
+ * this implementation uses bubble sort to sort the array
+ * in descending order 
  *
  * @param array:  pointer to an array
  * @param counter: the number of elements in the array
