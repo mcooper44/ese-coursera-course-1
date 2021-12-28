@@ -77,10 +77,11 @@ void print_array(unsigned char *array, unsigned int counter){
 void sort_array (unsigned char *array, unsigned int counter){
   int i=0, j=0, temp = 0;
   for(i=0; i<counter; i++)
+
   {
-    for(j=0; j<counter-1; j++)
+    for(j=0; j<counter-i; j++)
     {
-      if(array[j]>array[j+1])
+      if(array[j]<array[j+1])
       {
         temp=array[j];
         array[j]=array[j+1];
