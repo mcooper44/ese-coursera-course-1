@@ -50,20 +50,136 @@
 #
 #------------------------------------------------------------------------------
 include sources.mk
+# base file name for output specified in assignment
+BASENAME = c1m2
 
 # Platform Overrides
-PLATFORM = 
+PLATFORM = MSP432
 
 # Architectures Specific Flags
-LINKER_FILE = 
-CPU = 
-ARCH = 
-SPECS = 
+ifeq ($(PLATFORM), MSP432)
+	LINKER_FILE = -T ../msp432p401r.lds
+	CPU = cortex-m4
+	ARCH = armv7e-m
+	SPECS = nosys.specs
+
+else
+	CPU = x86_64
+	ARCH:=$(shell arch)
+endif	
 
 # Compiler Flags and Defines
-CC = 
-LD = 
-LDFLAGS = 
-CFLAGS = 
-CPPFLAGs = 
+ifeq ($(PLATFORM),MSP432)
+	CC = arm-none-eabi-gcc 
+	LD = arm-none-eabi-ld 
+	# Wl can pass an option to the linker chained with commas.
+	# the following passed c1m2.map to the linker
+	LDFLAGS = -Wl,-Map=$(BASENAME).map $(LINKER_FILE)
+	# as per the assignment the following flags need to be passed in for the target
+	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -Wall -Werror -g -O0 -std=c99
+	CPPFLAGS = -M -MF test.d
+	#DEFINEFLAG = DMSP432
+	DEFINEFLAG = -DHOST
+	PLATFORM = MSP432
+	SOURCES = $(MSP432_SOURCES)
+	INCLUDES = $(MSP432_INCLUDES)
+else
+	# as per the assignment instructions for the host system these flags must be used
+	CC = gcc
+	LDFLAGS = -Wl,-Map=$(BASENAME).map
+	CPPFLAGS = -M -MF test2.d
+	DEFINEFLAG = -DHOST
+	PLATFORM = HOST
+	SOURCES = $(HOST_SOURCES)
+	INCLUDES = $(HOST_INCLUDES)
+endif
 
+OBJS:= $(SOURCES:.c=.o)
+ASMS:= $(SOURCES:.c=.s)
+PPS:= $(SOURCES:.c=.i)
+MAPS:= $(SOURCES:.c=.map)
+OUTS:= $(SOURCES:.c=.out)
+
+########################################
+# Target: <file>.i                     #
+# Must have: .c file                   #
+# Output: .d + .i files                #
+#                                      #
+# $< represents the first prerequisite #
+# required to create the output file   #
+# $@ the filename representing the     #
+# target                               #
+# -E end at preprocessing step         #
+#                                      #
+########################################
+
+%.i : %.c
+	#$(CC) $(CPPFLAGS) $(DEFINEFLAG) $<
+	#$(CC) $(DEFINEFLAG) -E -o $@ $<
+	$(CC) -E -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) -o $@
+
+########################################
+# Target: <file>.asm                   #
+# Must have: .c file                   #
+# Output: .asm either from .c or .o    #
+# files                                #
+#                                      #
+# -S stops before assembling           #
+#                                      #
+#                                      #
+# objdump is the command-line tool for #
+# displaying information about object  #
+# files on unix-like OS'               #
+########################################
+
+%.asm : %.c
+	$(CC) -S -D$(PLATFORM) $< $(DEFINEFLAGS) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
+	objdump -S -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
+
+
+########################################
+# Target: <file>.o                     #
+# Must have: .c file                   #
+# Output: .o file from .c file         #
+#                                      #
+########################################
+
+%.o : %.c
+	$(CC) -c $^ -D$(PLATFORM) $(INCLUDES) $(DEFINEFLAG) $(CFLAGS) -o $@
+
+
+########################################
+# Target: compile-all                  #
+# Must have: source                    #
+# Output: compiles source but halts at #
+# linking                              #
+#                                      #
+########################################
+
+.PHONY: compile-all
+compile-all: $(SOURCES)
+	@echo "compiling source files but not linking!"
+	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) -c $(SOURCES)
+
+
+########################################
+# Target: build                        #
+# Must have: main.out                  #
+# Output: and executable and the size  #
+# output                               #
+#                                      #
+########################################
+
+.PHONY: build
+build: all
+
+.PHONY: all
+all: $(BASENAME).out
+$(BASENAME).out: $(SOURCES)
+	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(SOURCES) $(LDFLAGS) -o $@
+	size $(BASENAME).out
+  
+# purge the output files so we can start again
+.PHONY: clean
+clean:
+	rm -f *.o *.out *.s *.i *.d *.map *.asm
