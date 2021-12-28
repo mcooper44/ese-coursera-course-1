@@ -40,7 +40,7 @@
  * @return void
  */
 
-void print_statistics(unsigned char minimum, unsigned char maximum, float mean, unsigned char median);
+void print_statistics(unsigned char minimum, unsigned char maximum, unsigned char mean, unsigned char median);
 
 /**
  * @brief prints an arbitrary array of numbers
@@ -81,7 +81,7 @@ unsigned char find_median(unsigned char *array, unsigned int counter);
  * @param array: an array of integers
  * @param counter: the number of elements in the array
  *
- * @return float
+ * @return unsigned char
  */
 
 float find_mean (unsigned char *array, unsigned int counter);
