@@ -28,7 +28,7 @@
 # Build Targets:
 #      <file>.i ---> this rule generates the preprocessor output + the dependency
 #      	             file (.i and .d respectively) for the input .c file
-#      <file>.asm ---> creates the assembly file and stops there
+#      <file>.asm ---> creates the assembly file with the help of objdump and stops there
 #      <file>.o ---> creates the object and source files
 #      compile-all ---> compiles all source files and creates object files but does not link
 #      build ---> creates an executable named c1m2.out by linking the object files
@@ -51,9 +51,9 @@
 #------------------------------------------------------------------------------
 include sources.mk
 # base file name for output specified in assignment
-BASENAME = c1m2
+OUTPUTNAME = c1m2
 
-# Platform Overrides
+# Platform Overrides - default platform
 PLATFORM = MSP432
 
 # Architectures Specific Flags
@@ -64,6 +64,9 @@ ifeq ($(PLATFORM), MSP432)
 	SPECS = nosys.specs
 
 else
+	# for RPI3
+	#CPU = armv7l 
+	# for regular desktop environment
 	CPU = x86_64
 	ARCH:=$(shell arch)
 endif	
@@ -74,19 +77,22 @@ ifeq ($(PLATFORM),MSP432)
 	LD = arm-none-eabi-ld 
 	# Wl can pass an option to the linker chained with commas.
 	# the following passed c1m2.map to the linker
-	LDFLAGS = -Wl,-Map=$(BASENAME).map $(LINKER_FILE)
+	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map $(LINKER_FILE)
 	# as per the assignment the following flags need to be passed in for the target
 	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -Wall -Werror -g -O0 -std=c99
 	CPPFLAGS = -M -MF test.d
-	#DEFINEFLAG = DMSP432
+	# in the assignment the following flag was provided as an either or - the commented out one
+	# does not seem to work
+	#DEFINEFLAG = DMSP432 
 	DEFINEFLAG = -DHOST
 	PLATFORM = MSP432
 	SOURCES = $(MSP432_SOURCES)
 	INCLUDES = $(MSP432_INCLUDES)
 else
 	# as per the assignment instructions for the host system these flags must be used
+	# were appropriate flags will be explained further down
 	CC = gcc
-	LDFLAGS = -Wl,-Map=$(BASENAME).map
+	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map
 	CPPFLAGS = -M -MF test2.d
 	DEFINEFLAG = -DHOST
 	PLATFORM = HOST
@@ -114,8 +120,7 @@ OUTS:= $(SOURCES:.c=.out)
 ########################################
 
 %.i : %.c
-	#$(CC) $(CPPFLAGS) $(DEFINEFLAG) $<
-	#$(CC) $(DEFINEFLAG) -E -o $@ $<
+	@echo "creating preprocessor output and dependency files"
 	$(CC) -E -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) -o $@
 
 ########################################
@@ -133,6 +138,7 @@ OUTS:= $(SOURCES:.c=.out)
 ########################################
 
 %.asm : %.c
+	@echo "creating assembly file"
 	$(CC) -S -D$(PLATFORM) $< $(DEFINEFLAGS) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
 	objdump -S -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
 
@@ -145,6 +151,7 @@ OUTS:= $(SOURCES:.c=.out)
 ########################################
 
 %.o : %.c
+	@echo "creating object files as output"
 	$(CC) -c $^ -D$(PLATFORM) $(INCLUDES) $(DEFINEFLAG) $(CFLAGS) -o $@
 
 
@@ -174,12 +181,14 @@ compile-all: $(SOURCES)
 build: all
 
 .PHONY: all
-all: $(BASENAME).out
-$(BASENAME).out: $(SOURCES)
+all: $(OUTPUTNAME).out
+$(OUTPUTNAME).out: $(SOURCES)
+	@echo "building..."
 	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(SOURCES) $(LDFLAGS) -o $@
-	size $(BASENAME).out
+	size $(OUTPUTNAME).out
   
 # purge the output files so we can start again
 .PHONY: clean
 clean:
+	@echo "purging..."
 	rm -f *.o *.out *.s *.i *.d *.map *.asm
