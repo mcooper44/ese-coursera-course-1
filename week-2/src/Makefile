@@ -21,7 +21,7 @@
 # to get lost in the weeds.  
 #
 # A useful reference is the course material slides associated discussion 
-# and https://devhints.io/makefile
+# and https://devhints.io/makefile and https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 #
 # Use: make [TARGET] [PLATFORM-OVERRIDES]
 #
@@ -55,19 +55,25 @@ OUTPUTNAME = c1m2
 
 # Platform Overrides - default platform
 PLATFORM = MSP432
+# in the assignment the following flag was provided as an either or - the commented out one
+# does not seem to work
+#DEFINEFLAG = DMSP432 
+CPPFLAGS = -MMD
+DEFINEFLAG = -DHOST
 
 # Architectures Specific Flags
+# MSP432
 ifeq ($(PLATFORM), MSP432)
 	LINKER_FILE = -T ../msp432p401r.lds
 	CPU = cortex-m4
 	ARCH = armv7e-m
 	SPECS = nosys.specs
-
+# HOST
 else
 	# for RPI3
-	#CPU = armv7l 
+	CPU = armv7l 
 	# for regular desktop environment
-	CPU = x86_64
+	#CPU = x86_64
 	ARCH:=$(shell arch)
 endif	
 
@@ -80,24 +86,23 @@ ifeq ($(PLATFORM),MSP432)
 	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map $(LINKER_FILE)
 	# as per the assignment the following flags need to be passed in for the target
 	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -Wall -Werror -g -O0 -std=c99
-	CPPFLAGS = -M -MF test.d
-	# in the assignment the following flag was provided as an either or - the commented out one
-	# does not seem to work
-	#DEFINEFLAG = DMSP432 
-	DEFINEFLAG = -DHOST
 	PLATFORM = MSP432
 	SOURCES = $(MSP432_SOURCES)
 	INCLUDES = $(MSP432_INCLUDES)
+	OBJDUMP = arm-none-eabi-objdump
+	SIZEF = arm-none-eabi-size
 else
 	# as per the assignment instructions for the host system these flags must be used
 	# were appropriate flags will be explained further down
 	CC = gcc
 	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map
-	CPPFLAGS = -M -MF test2.d
+	CPPFLAGS = -MMD 
 	DEFINEFLAG = -DHOST
 	PLATFORM = HOST
 	SOURCES = $(HOST_SOURCES)
 	INCLUDES = $(HOST_INCLUDES)
+	OBJDUMP = objdump
+	SIZEF = size
 endif
 
 OBJS:= $(SOURCES:.c=.o)
@@ -121,16 +126,14 @@ OUTS:= $(SOURCES:.c=.out)
 
 %.i : %.c
 	@echo "creating preprocessor output and dependency files"
-	$(CC) -E -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) -o $@
+	$(CC) -E -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) $(CPPFLAGS) -o $@
 
 ########################################
 # Target: <file>.asm                   #
 # Must have: .c file                   #
-# Output: .asm either from .c or .o    #
-# files                                #
+# Output: .asm either from .c          #
 #                                      #
 # -S stops before assembling           #
-#                                      #
 #                                      #
 # objdump is the command-line tool for #
 # displaying information about object  #
@@ -139,21 +142,18 @@ OUTS:= $(SOURCES:.c=.out)
 
 %.asm : %.c
 	@echo "creating assembly file"
-	$(CC) -S -D$(PLATFORM) $< $(DEFINEFLAGS) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
-	objdump -S -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
-
+	$(CC) -S $^ -D$(PLATFORM) $(DEFINEFLAGS) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
 
 ########################################
 # Target: <file>.o                     #
 # Must have: .c file                   #
-# Output: .o file from .c file         #
-#                                      #
+# Output: .o file from .c file and     #
+# dependency files                     #
 ########################################
 
 %.o : %.c
 	@echo "creating object files as output"
-	$(CC) -c $^ -D$(PLATFORM) $(INCLUDES) $(DEFINEFLAG) $(CFLAGS) -o $@
-
+	$(CC) -c $^ -D$(PLATFORM) $(INCLUDES) $(DEFINEFLAG) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@
 
 ########################################
 # Target: compile-all                  #
@@ -166,8 +166,7 @@ OUTS:= $(SOURCES:.c=.out)
 .PHONY: compile-all
 compile-all: $(SOURCES)
 	@echo "compiling source files but not linking!"
-	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) -c $(SOURCES)
-
+	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) -c $(SOURCES)
 
 ########################################
 # Target: build                        #
@@ -184,9 +183,10 @@ build: all
 all: $(OUTPUTNAME).out
 $(OUTPUTNAME).out: $(SOURCES)
 	@echo "building..."
-	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(SOURCES) $(LDFLAGS) -o $@
-	size $(OUTPUTNAME).out
-  
+	$(CC) -D$(PLATFORM) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(SOURCES) $(LDFLAGS) -o $@
+	$(SIZEF) $(OUTPUTNAME).out
+	$(OBJDUMP) -S $@ > $(OUTPUTNAME).asm 
+
 # purge the output files so we can start again
 .PHONY: clean
 clean:
