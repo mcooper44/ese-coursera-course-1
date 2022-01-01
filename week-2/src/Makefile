@@ -17,11 +17,15 @@
 # and produce a variety of intermediary files and outputs for analysis
 #
 # Makefiles have a lot of power, but have not aged well as a development tool
-# The coures material does a great job of providing an overview but it is easy
-# to get lost in the weeds.  
+# trying to parse the syntax of them seems to transform my braincells to a
+# soup like homogenate over time.  
+# The course material does a great job of providing an overview but it is easy
+# to get lost in the weeds. I still feel pretty lost after too many late nights! 
 #
 # A useful reference is the course material slides associated discussion 
 # and https://devhints.io/makefile and https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
+# https://scottmcpeak.com/autodepend/autodepend.html
+# 
 #
 # Use: make [TARGET] [PLATFORM-OVERRIDES]
 #
@@ -55,10 +59,11 @@ OUTPUTNAME = c1m2
 
 # Platform Overrides - default platform
 PLATFORM = MSP432
+# generate dependency files
+CPPFLAGS = -MMD -MP
 # in the assignment the following flag was provided as an either or - the commented out one
 # does not seem to work
 #DEFINEFLAG = DMSP432 
-CPPFLAGS = -MMD
 DEFINEFLAG = -DHOST
 
 # Architectures Specific Flags
@@ -77,7 +82,7 @@ else
 	ARCH:=$(shell arch)
 endif	
 
-# Compiler Flags and Defines
+# Compiler Flags and Defines depending on target
 ifeq ($(PLATFORM),MSP432)
 	CC = arm-none-eabi-gcc 
 	LD = arm-none-eabi-ld 
@@ -93,7 +98,6 @@ ifeq ($(PLATFORM),MSP432)
 	SIZEF = arm-none-eabi-size
 else
 	# as per the assignment instructions for the host system these flags must be used
-	# were appropriate flags will be explained further down
 	CC = gcc
 	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map
 	CPPFLAGS = -MMD 
