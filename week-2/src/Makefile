@@ -94,8 +94,8 @@ endif
 OBJS:= $(SOURCES:.c=.o)
 ASMS:= $(SOURCES:.c=.asm)
 PPS:= $(SOURCES:.c=.i)
-MAPS:= $(SOURCES:.c=.map)
 DEPS:= $(SOURCES:.c=.d)
+FILES:= *.o *.asm *.i *.d
 
 ########################################
 # Target: <file>.i                     #
@@ -171,9 +171,10 @@ $(OUTPUTNAME).out: $(OBJS) $(DEPS)
 	@echo "building..."
 	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) -o $@ $(OBJS)
 	$(SIZEF) $(OUTPUTNAME).out
+	$(SIZEF) -Atd $(OUTPUTNAME).out > $(OUTPUTNAME)_$(PLATFORM).size
 
 # purge the output files so we can start again
 .PHONY: clean
 clean:
 	@echo "purging..."
-	rm -f *.o *.out *.s *.i *.d *.map *.asm
+	rm -f $(FILES) *.out *.size *.map
