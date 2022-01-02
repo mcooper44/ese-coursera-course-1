@@ -16,17 +16,6 @@
 # The goal is to produce a makefile that can compile for host and target hardware
 # and produce a variety of intermediary files and outputs for analysis
 #
-# Makefiles have a lot of power, but have not aged well as a development tool
-# trying to parse the syntax of them seems to transform my braincells to a
-# soup like homogenate over time.  
-# The course material does a great job of providing an overview but it is easy
-# to get lost in the weeds. I still feel pretty lost after too many late nights! 
-#
-# A useful reference is the course material slides associated discussion 
-# and https://devhints.io/makefile and https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
-# https://scottmcpeak.com/autodepend/autodepend.html
-# 
-#
 # Use: make [TARGET] [PLATFORM-OVERRIDES]
 #
 # Build Targets:
@@ -61,81 +50,73 @@ OUTPUTNAME = c1m2
 PLATFORM = MSP432
 # generate dependency files
 CPPFLAGS = -MMD -MP
-# in the assignment the following flag was provided as an either or - the commented out one
-# does not seem to work
-#DEFINEFLAG = DMSP432 
-DEFINEFLAG = -DHOST
 
 # Architectures Specific Flags
 # MSP432
 ifeq ($(PLATFORM), MSP432)
-	LINKER_FILE = -T ../msp432p401r.lds
+	LINKER_FILE = ../msp432p401r.lds
 	CPU = cortex-m4
 	ARCH = armv7e-m
 	SPECS = nosys.specs
-# HOST
-else
-	# for RPI3
-	CPU = armv7l 
-	# for regular desktop environment
-	#CPU = x86_64
-	ARCH:=$(shell arch)
-endif	
-
-# Compiler Flags and Defines depending on target
-ifeq ($(PLATFORM),MSP432)
 	CC = arm-none-eabi-gcc 
 	LD = arm-none-eabi-ld 
 	# Wl can pass an option to the linker chained with commas.
 	# the following passed c1m2.map to the linker
-	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map $(LINKER_FILE)
-	# as per the assignment the following flags need to be passed in for the target
-	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -Wall -Werror -g -O0 -std=c99
+	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map -T $(LINKER_FILE)
 	PLATFORM = MSP432
+	# as per the assignment the following flags need to be passed in for the target
+	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -Wall -Werror -g -O0 -std=c99 -D$(PLATFORM)
 	SOURCES = $(MSP432_SOURCES)
 	INCLUDES = $(MSP432_INCLUDES)
 	OBJDUMP = arm-none-eabi-objdump
 	SIZEF = arm-none-eabi-size
+	
+
 else
 	# as per the assignment instructions for the host system these flags must be used
 	CC = gcc
+	LD = ld
 	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map
 	CPPFLAGS = -MMD 
-	DEFINEFLAG = -DHOST
 	PLATFORM = HOST
 	SOURCES = $(HOST_SOURCES)
 	INCLUDES = $(HOST_INCLUDES)
 	OBJDUMP = objdump
 	SIZEF = size
+	# for RPI3
+	CPU = armv7l 
+	# for regular desktop environment
+	#CPU = x86_64
+	ARCH:=$(shell arch)
+	CFLAGS = -Wall -Werror -g -O0 -std=c99 -D$(PLATFORM)
 endif
 
 OBJS:= $(SOURCES:.c=.o)
-ASMS:= $(SOURCES:.c=.s)
+ASMS:= $(SOURCES:.c=.asm)
 PPS:= $(SOURCES:.c=.i)
 MAPS:= $(SOURCES:.c=.map)
-OUTS:= $(SOURCES:.c=.out)
+DEPS:= $(SOURCES:.c=.d)
 
 ########################################
 # Target: <file>.i                     #
 # Must have: .c file                   #
 # Output: .d + .i files                #
 #                                      #
-# $< represents the first prerequisite #
-# required to create the output file   #
-# $@ the filename representing the     #
-# target                               #
 # -E end at preprocessing step         #
 #                                      #
 ########################################
 
 %.i : %.c
 	@echo "creating preprocessor output and dependency files"
-	$(CC) -E -D$(PLATFORM) $< $(CFLAGS) $(INCLUDES) $(CPPFLAGS) -o $@
+	$(CC) -E $(INCLUDES) $(CPPFLAGS) $< $(CFLAGS) -o $@
+
+%.d : %.c
+	$(CC) $(INCLUDES) -M $< $(CFLAGS) -o $@
 
 ########################################
 # Target: <file>.asm                   #
 # Must have: .c file                   #
-# Output: .asm either from .c          #
+# Output: .asm                         #
 #                                      #
 # -S stops before assembling           #
 #                                      #
@@ -146,7 +127,10 @@ OUTS:= $(SOURCES:.c=.out)
 
 %.asm : %.c
 	@echo "creating assembly file"
-	$(CC) -S $^ -D$(PLATFORM) $(DEFINEFLAGS) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@
+	$(CC) $(INCLUDES) -S $< $(CFLAGS) -o $@
+
+$(OUTPUTNAME).asm : $(OUTPUTNAME).out
+	$(OBJDUMP) -d $(OUTPUTNAME).out >> $@
 
 ########################################
 # Target: <file>.o                     #
@@ -157,7 +141,7 @@ OUTS:= $(SOURCES:.c=.out)
 
 %.o : %.c
 	@echo "creating object files as output"
-	$(CC) -c $^ -D$(PLATFORM) $(INCLUDES) $(DEFINEFLAG) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@
+	$(CC) $(INCLUDES) -c $< $(CFLAGS) -o $@
 
 ########################################
 # Target: compile-all                  #
@@ -168,9 +152,9 @@ OUTS:= $(SOURCES:.c=.out)
 ########################################
 
 .PHONY: compile-all
-compile-all: $(SOURCES)
+compile-all: $(OBJS)
 	@echo "compiling source files but not linking!"
-	$(CC) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) -c $(SOURCES)
+	$(CC) $(OBJS) $(INCLUDES) -c $(CFLAGS) $(CPPFLAGS) -o $(OUTPUTNAME).o
 
 ########################################
 # Target: build                        #
@@ -181,15 +165,12 @@ compile-all: $(SOURCES)
 ########################################
 
 .PHONY: build
-build: all
+build: $(OUTPUTNAME).out  $(OUTPUTNAME).asm
 
-.PHONY: all
-all: $(OUTPUTNAME).out
-$(OUTPUTNAME).out: $(SOURCES)
+$(OUTPUTNAME).out: $(OBJS) $(DEPS)
 	@echo "building..."
-	$(CC) -D$(PLATFORM) $(DEFINEFLAG) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(SOURCES) $(LDFLAGS) -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) -o $@ $(OBJS)
 	$(SIZEF) $(OUTPUTNAME).out
-	$(OBJDUMP) -S $@ > $(OUTPUTNAME).asm 
 
 # purge the output files so we can start again
 .PHONY: clean
