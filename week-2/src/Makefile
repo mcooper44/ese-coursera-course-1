@@ -135,8 +135,8 @@ $(OUTPUTNAME).asm : $(OUTPUTNAME).out
 ########################################
 # Target: <file>.o                     #
 # Must have: .c file                   #
-# Output: .o file from .c file and     #
-# dependency files                     #
+# Output: .o file from .c file         #
+#                                      #
 ########################################
 
 %.o : %.c
@@ -159,8 +159,8 @@ compile-all: $(OBJS)
 ########################################
 # Target: build                        #
 # Must have: main.out                  #
-# Output: and executable and the size  #
-# output                               #
+# Output: an executable, .o .d .map    #
+# target.asm and size output           #
 #                                      #
 ########################################
 
