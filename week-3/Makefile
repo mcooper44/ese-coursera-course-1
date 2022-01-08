@@ -9,17 +9,22 @@ LINKERFILE = msp432p401r.lds
 
 SPECS = nosys.specs
 FLOAT = softfp #hard #hard causes vfp errors on current host
+DEBUGFLAGS = -g3
+# overview of extra flags at 
+# https://interrupt.memfault.com/blog/best-and-worst-gcc-clang-compiler-flags
+EXTRAFLAGS = -fno-common -Wundef -Wdouble-promotion
 CFLAGS = -std=c99 -Wall -Werror
 ARMFLAGS = --specs=$(SPECS) -mfloat-abi=$(FLOAT) 
-MPFLAGS = -Wl,-MAP=$(TARGET).map,-Wl,$(ARMFLAGS)
-LDFLAGS = -T $(LINKERFILE)
+MPFLAGS = -Wl,-Map=$(TARGET).map 
+LDFLAGS = $(MPFLAGS) -T $(LINKERFILE)
 ASMFLAGS = -fverbose-asm # adds informative comments when compiling with -S
 # utils
 OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 NM = arm-none-eabi-nm
 # util flags
-NMF = -S --size-sort -s
+# -S --size-sort prints the value and size of the symbol
+NMF = -S --size-sort --line-numbers
 SIZEF = -Atd
 OBJDF = -d
 
