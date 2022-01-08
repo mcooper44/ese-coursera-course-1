@@ -13,29 +13,33 @@
 # This is the second assignment for the Coursera Course Introduction to Embedded 
 # Systems Software and Development Environments 
 #
-# The goal is to produce a makefile that can compile for host and target hardware
-# and produce a variety of intermediary files and outputs for analysis
+# The goal is to produce a makefile that can compile for host and target 
+# hardware and produce a variety of intermediary files and outputs for analysis
 #
 # Use: make [TARGET] [PLATFORM-OVERRIDES]
 #
 # Build Targets:
 #      <file>.i ---> this rule generates the preprocessor output + the dependency
 #      	             file (.i and .d respectively) for the input .c file
-#      <file>.asm ---> creates the assembly file with the help of objdump and stops there
+#      <file>.asm ---> creates the assembly file with the help of objdump and 
+#      		       stops there
 #      <file>.o ---> creates the object and source files
-#      compile-all ---> compiles all source files and creates object files but does not link
-#      build ---> creates an executable named c1m2.out by linking the object files
-#                 it also generates the memory map and outputs the size with the size tool
+#      compile-all ---> compiles all source files and creates object files but 
+#      			does not link
+#      build ---> creates an executable named c1m2.out by linking the object 
+#      		  files it also generates the memory map and outputs the size 
+#      		  with the size tool
 #      clean ---> purges .i .o .d .map .s .out files
 #
 # Platform Overrides:
 #      This makefile support two platforms the native HOST and the MSP432. 
-#      The host embedded system will use the native compiler, gcc. The target embedded system 
-#      will use the cross compiler, arm-none-eabi-gcc. 
-#      The PLATFORM keyword provided in the Makefile should be used to conditionally assign the 
-#      appropriate compiler flags, linker flags, and architecture flags. The target 
-#      platform must be provided at the command line with the make command to set the 
-#      platform you are compiling for. 
+#      The host embedded system will use the native compiler, gcc. The 
+#      target embedded system will use the cross compiler, arm-none-eabi-gcc. 
+#      The PLATFORM keyword provided in the Makefile should be used to 
+#      conditionally assign the appropriate compiler flags, linker flags, 
+#      and architecture flags. The target platform must be provided at the 
+#      command line with the make command to set the platform you are 
+#      compiling for. 
 #
 #	eg. 
 #	make build PLATFORM=MSP432
@@ -55,17 +59,22 @@ CPPFLAGS = -MMD -MP
 # MSP432
 ifeq ($(PLATFORM), MSP432)
 	LINKER_FILE = ../msp432p401r.lds
+	LF = -T $(LINKER_FILE)
 	CPU = cortex-m4
 	ARCH = armv7e-m
 	SPECS = nosys.specs
 	CC = arm-none-eabi-gcc 
 	LD = arm-none-eabi-ld 
 	# Wl can pass an option to the linker chained with commas.
-	# the following passed c1m2.map to the linker
-	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map -T $(LINKER_FILE)
+	# the following passed c1m2.map to the linker plus the LF variable 
+	# for the linker file - separating LF because it won't be needed 
+	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map
 	PLATFORM = MSP432
-	# as per the assignment the following flags need to be passed in for the target
-	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -Wall -Werror -g -O0 -std=c99 -D$(PLATFORM)
+	# as per the assignment the following flags need to be passed in 
+	# for the target
+	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) \
+		 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb \
+		 -Wall -Werror -g -O0 -std=c99 -D$(PLATFORM)
 	SOURCES = $(MSP432_SOURCES)
 	INCLUDES = $(MSP432_INCLUDES)
 	OBJDUMP = arm-none-eabi-objdump
@@ -73,11 +82,12 @@ ifeq ($(PLATFORM), MSP432)
 	
 
 else
-	# as per the assignment instructions for the host system these flags must be used
+	# as per the assignment instructions for the host system 
+	# these flags must be used
 	CC = gcc
 	LD = ld
 	LDFLAGS = -Wl,-Map=$(OUTPUTNAME).map
-	CPPFLAGS = -MMD 
+	#CPPFLAGS = -MMD 
 	PLATFORM = HOST
 	SOURCES = $(HOST_SOURCES)
 	INCLUDES = $(HOST_INCLUDES)
@@ -169,7 +179,7 @@ build: $(OUTPUTNAME).out  $(OUTPUTNAME).asm
 
 $(OUTPUTNAME).out: $(OBJS) $(DEPS)
 	@echo "building..."
-	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) $(LF) -o $@ $(OBJS)
 	$(SIZEF) $(OUTPUTNAME).out
 	$(SIZEF) -Atd $(OUTPUTNAME).out > $(OUTPUTNAME)_$(PLATFORM).size
 
