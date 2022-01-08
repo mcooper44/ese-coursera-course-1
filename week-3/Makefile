@@ -31,7 +31,7 @@ OBJDF = -d
 OBJS:= $(SOURCES:.c=.o)
 ASMS:= $(SOURCES:.c=.s)
 
-FILES = *.o *.map *.s *.size *.nm
+FILES = *.o *.map *.s *.size *.nm *.out
 
 *.o:%.c
 	$(CC) -c $(CFLAGS) $(ARMFLAGS) $@ $<
