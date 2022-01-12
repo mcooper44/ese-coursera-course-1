@@ -24,11 +24,14 @@
  */
 
 #include <stdio.h>
-#include "stats.h" // prototypes of stats functions to sort, determine min, max
+#include "../include/common/stats.h" // prototypes of stats functions to sort, determine min, max
 		   // median of an array of numbers
 
 /* Size of the Data Set */
 #define SIZE (40)
+/* Pretty print dimensions */
+#define BLOCKWIDE (SIZE / 5)
+#define BLOCKDEPTH (SIZE / 8)
 
 void main(){
   // array of numbers to operate on
@@ -68,13 +71,15 @@ void print_statistics(unsigned char min, unsigned char max, unsigned char mean, 
 }
 
 void print_array(unsigned char *array, unsigned int counter){
-  for (int i=0;i<counter/8; i++){
-    for(int j=0;j<counter/5; j++){
-      printf("%3d   ",array[8*i+j]);
+  #ifdef VERBOSE
+  for (int i=0;i<counter/BLOCKWIDE; i++){
+    for(int j=0;j<counter/BLOCKDEPTH; j++){
+      printf("%3d   ",array[BLOCKWIDE*i+j]);
     }
     printf("\n");
   }
   printf("\n");
+  #endif
   return;
 }
 
