@@ -25,7 +25,8 @@
 
 #include <stdio.h>
 #include "../include/common/stats.h" // prototypes of stats functions to sort, determine min, max
-		   // median of an array of numbers
+                                    // median of an array of numbers
+#include "../include/common/platform.h"
 
 /* Size of the Data Set */
 #define SIZE (40)
