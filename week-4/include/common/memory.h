@@ -36,6 +36,7 @@
  */
 void set_value(char * ptr, unsigned int index, char value);
 
+/*********************************************************************/
 /**
  * @brief Clear a value of a data array 
  *
@@ -49,6 +50,7 @@ void set_value(char * ptr, unsigned int index, char value);
  */
 void clear_value(char * ptr, unsigned int index);
 
+/*********************************************************************/
 /**
  * @brief Returns a value of a data array 
  *
@@ -62,6 +64,7 @@ void clear_value(char * ptr, unsigned int index);
  */
 char get_value(char * ptr, unsigned int index);
 
+/*********************************************************************/
 /**
  * @brief Sets data array elements to a value
  *
@@ -77,6 +80,7 @@ char get_value(char * ptr, unsigned int index);
  */
 void set_all(char * ptr, char value, unsigned int size);
 
+/*********************************************************************/
 /**
  * @brief Clears elements in a data array
  *
@@ -89,5 +93,85 @@ void set_all(char * ptr, char value, unsigned int size);
  * @return void.
  */
 void clear_all(char * ptr, unsigned int size);
+
+/*********************************************************************/
+
+/**
+ *
+ *  1.This function takes two byte pointers (one source and one destination) and a
+ *  length of bytes to move from the source location to the destination. 
+ *  2. The behavior should handle overlap of source and destination. Copy should 
+ *  occur, with no data corruption.  
+ *  3. All operations need to be performed using pointer arithmetic, not array 
+ *  indexing
+ *  4. Should return a pointer to the destination (dst).
+ */
+uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length);
+
+/*********************************************************************/
+/**
+ * 1.This function takes two byte pointers (one source and one destination) 
+ * and a length of bytes to copy from the source location to the destination.
+ * 2. The behavior is undefined if there is overlap of source and destination. 
+ * Copy should still occur, but will likely corrupt your data.
+ * 3. All operations need to be performed using pointer arithmetic, not array 
+ * indexing
+ * 4. Should return a pointer to the destination (dst).
+ */
+uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length);
+
+/*********************************************************************/
+/**
+ * 1.This should take a pointer to a source memory location, a length in bytes
+ * and set all locations of that memory to a given value.
+ * 2. All operations need to be performed using pointer arithmetic, not array 
+ * indexing
+ * 3. Should return a pointer to the source (src).
+ * 4. You should NOT reuse the set_all() function
+*/
+uint8_t * my_memset(uint8_t * src, size_t length, uint8_t value);
+
+/*********************************************************************/
+
+/**
+ * 1. This should take a pointer to a memory location, a length in bytes and 
+ * zero out all of the memory.
+ * 2. All operations need to be performed using pointer arithmetic, not 
+ * array indexing
+ * 3. Should return a pointer to the source (src).
+ * 4. You should NOT reuse the clear_all() function
+ */
+uint8_t * my_memzero(uint8_t * src, size_t length);
+
+/*********************************************************************/
+/**
+ * 1. This should take a pointer to a memory location and a length in bytes 
+ * and reverse the order of all of the bytes.
+ * 2. All operations need to be performed using pointer arithmetic, not 
+ * array indexing
+ * 3. Should return a pointer to the source.
+ */
+uint8_t * my_reverse(uint8_t * src, size_t length);
+
+/*********************************************************************/
+/**
+ * 1. This should take number of words to allocate in dynamic memory
+ * 2. All operations need to be performed using pointer arithmetic, not 
+ * array indexing
+ * 3. Should return a pointer to memory if successful, or a Null Pointer 
+ * if not successful
+*/
+int32_t * reserve_words(size_t length);
+
+/********************************************************************/
+/**
+ * 1. Should free a dynamic memory allocation by providing the pointer 
+ * src to the function
+ * 2. All operations need to be performed using pointer arithmetic, not 
+ * array indexing
+*/
+void free_words(int32_t * src);
+
+/********************************************************************/
 
 #endif /* __MEMORY_H__ */
