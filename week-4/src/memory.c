@@ -20,6 +20,10 @@
  * @date April 1 2017
  *
  */
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdint.h>
+
 #include "../include/common/memory.h"
 
 /***********************************************************
@@ -76,16 +80,18 @@ uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length)
   {    
     for(uint8_t i = (length -1); i>0; i--)
     {
-      *(dst+i)-- = *(src+i)--;
+      *(d_pt+i)= *(s_pt+i);
     }
   }
   return dst;
 }    
 
 uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length){
-  unsigned int i = 0;
-  for (i; i<length; i++){
-    *dst++ = *src++;
+  uint8_t *d_pt = dst;
+  uint8_t *s_pt = src;
+  while (length--)
+  {
+    *d_pt++ = *s_pt++;
   }
   return dst;
 }
