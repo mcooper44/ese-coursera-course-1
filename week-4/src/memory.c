@@ -91,7 +91,7 @@ uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length){
   uint8_t *s_pt = src;
   while (length--)
   {
-    *d_pt++ = *s_pt++;
+    *(d_pt++) = *(s_pt++);
   }
   return dst;
 }
