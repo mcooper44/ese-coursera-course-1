@@ -98,11 +98,10 @@ uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length){
 
 uint8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
 {
-  uint8_t *s_p = src;
-  while (length--)
+  for(int8_t i=0; i<length;i++)
   {
-    *s_p = value;
-  }
+    *(src+i) = value;
+  }	
   return src;
 }
   
@@ -125,7 +124,7 @@ uint8_t * my_reverse(uint8_t * src, size_t length)
     *(src+length) = *((temp_buffer+length)-(length-1));
   }
   free(temp_buffer);
-  return(src);
+  return src;
 }
 
 int32_t * reserve_words(size_t length)
