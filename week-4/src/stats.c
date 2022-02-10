@@ -34,6 +34,26 @@
 #define BLOCKWIDE (SIZE / 5)
 #define BLOCKDEPTH (SIZE / 8)
 
+#ifdef COURSE1
+void print_array(unsigned char *array, unsigned char counter)
+{
+  #ifdef VERBOSE
+  for (int i=0;i<counter/BLOCKWIDE; i++)
+  {
+    for(int j=0;j<counter/BLOCKDEPTH; j++)
+    {
+      printf("%3d   ",array[BLOCKWIDE*i+j]);
+    }
+    printf("\n");
+  }
+  printf("\n");
+  #endif
+  return;
+}
+
+// use regular stats funcs
+#else
+
 void main(){
   // array of numbers to operate on
   unsigned char test[SIZE] = { 34, 201, 190, 154,   8, 194,   2,   6,
@@ -69,19 +89,6 @@ void print_statistics(unsigned char min, unsigned char max, unsigned char mean, 
   printf("The maximum of the array is %d \n", max);
   printf("The median of the array is %d\n", median);
   printf("The mean of the array is %d\n\n", mean);
-}
-
-void print_array(unsigned char *array, unsigned int counter){
-  #ifdef VERBOSE
-  for (int i=0;i<counter/BLOCKWIDE; i++){
-    for(int j=0;j<counter/BLOCKDEPTH; j++){
-      printf("%3d   ",array[BLOCKWIDE*i+j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-  #endif
-  return;
 }
 
 void sort_array (unsigned char *array, unsigned int counter){
@@ -137,3 +144,4 @@ unsigned char find_maximum(unsigned char *array, unsigned int counter){
   }
   return max;
 }
+#endif // reg stats funcs - not COURSE1
