@@ -21,10 +21,11 @@
  *
  */
 
+#ifdef COURSE1
+#include "../include/common/course1.h"
 int main()
-{
-  #ifdef COURSE1
-    course1();
-  #endif
+{  
+  course1();
   return 0;
 }
+#endif
