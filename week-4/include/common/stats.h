@@ -22,6 +22,10 @@
  */
 #ifndef __STATS_H__
 #define __STATS_H__
+#ifdef COURSE1
+void print_array(unsigned char *array, unsigned char counter);
+
+#else
 
 /* Add Your Declarations and Function Comments here */ 
 /**
@@ -41,19 +45,6 @@
  */
 
 void print_statistics(unsigned char minimum, unsigned char maximum, unsigned char mean, unsigned char median);
-
-/**
- * @brief prints an arbitrary array of numbers
- *
- * this function loops through an array of numbers and prints them
- * to the terminal
- *
- * @param array: the starting point of the array to be printed
- * @param counter: the length of the array 
- * @return  void
- */
-
-void print_array(unsigned char *array, unsigned int counter);
 
 /**
  * @brief find the median of an arbitrary array of numbers
@@ -130,5 +121,5 @@ unsigned char find_minimum (unsigned char *array, unsigned int counter);
  */
 
 void sort_array (unsigned char *array, unsigned int counter);
-
+#endif
 #endif /* __STATS_H__ */
