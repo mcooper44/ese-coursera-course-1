@@ -9,12 +9,13 @@
 #
 #*****************************************************************************
 
-HOST_SOURCES = ./src/main.c ./src/memory.c ./src/course1.c  ./src/stats.c
+HOST_SOURCES = ./src/main.c ./src/memory.c ./src/course1.c  ./src/stats.c ./src/data.c
 
 MSP432_SOURCES =  ./src/main.c \
 		  ./src/memory.c \
 		  ./src/course1.c \
 		  ./src/stats.c \
+		  ./src/data.c \
 		  ./src/startup_msp432p401r_gcc.c \
 		  ./src/system_msp432p401r.c \
 		  ./src/interrupts_msp432p401r_gcc.c
