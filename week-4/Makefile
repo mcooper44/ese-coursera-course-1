@@ -50,16 +50,27 @@ include sources.mk
 # base file name for output specified in assignment
 OUTPUTNAME = final
 PROJ = COURSE1
-
 # Platform Overrides - default platform
 PLATFORM = HOST 
-
 # generate dependency files
 CPPFLAGS = -MMD -MP
-
 # error flags (-Werror -Wall)
-ERROR_F = 
+ERROR_F = -Werror -Wall
 
+VERBOSE_F = TRUE
+DEBUG_F = FALSE
+
+ifeq ($(DEBUG_F),TRUE)
+	DEBUG = -DDEBUG
+else
+	DEBUG =
+endif
+
+ifeq ($(VERBOSE_F),TRUE)
+	VERBOSE = -DVERBOSE
+else
+	VERBOSE = 
+endif
 # Architectures Specific Flags
 # MSP432
 ifeq ($(PLATFORM), MSP432)
@@ -79,7 +90,8 @@ ifeq ($(PLATFORM), MSP432)
 	# for the target
 	CFLAGS = -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) \
 		 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb \
-		 $(ERROR_F) -g -O0 -std=c99 -D$(PLATFORM) -D$(PROJ)
+		 $(ERROR_F) -g -O0 -std=c99 -D$(PLATFORM) -D$(PROJ) \
+		 $(DEBUG) $(VERBOSE)
 	SOURCES = $(MSP432_SOURCES)
 	INCLUDES = $(MSP432_INCLUDES)
 	OBJDUMP = arm-none-eabi-objdump
@@ -103,7 +115,8 @@ else
 	# for regular desktop environment
 	#CPU = x86_64
 	ARCH:=$(shell arch)
-	CFLAGS = $(ERROR_F) -g -O0 -std=c99 -D$(PLATFORM) -D$(PROJ)
+	CFLAGS = $(ERROR_F) -g -O0 -std=c99 -D$(PLATFORM) -D$(PROJ) \
+		 $(DEBUG) $(VERBOSE)
 endif
 
 OBJS:= $(SOURCES:.c=.o)
@@ -192,4 +205,4 @@ $(OUTPUTNAME).out: $(OBJS) $(DEPS)
 .PHONY: clean
 clean:
 	@echo "purging..."
-	rm -f $(FILES) *.out *.size *.map
+	rm -f src/$(FILES) *.out *.size *.map
