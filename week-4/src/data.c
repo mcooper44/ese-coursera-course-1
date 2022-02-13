@@ -6,7 +6,7 @@
 
 
 #include <stdio.h>
-#include <stint.h>  // uint8_t, int32_t
+#include <stdint.h>  // uint8_t, int32_t
 
 #include "../include/common/data.h"
 #include "../include/common/memory.h"
@@ -79,7 +79,7 @@ int32_t my_atoi(uint8_t * ptr, uint8_t digits, uint32_t base)
       int_pwr *=base;
     }
     int_value +=int_pwr;
-    ptr++
+    ptr++;
   }
-  return int_result*negative_flag;
+  return int_value*negative_flag;
 }
