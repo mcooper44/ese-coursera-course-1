@@ -26,7 +26,7 @@
 #      <file>.o ---> creates the object and source files
 #      compile-all ---> compiles all source files and creates object files but 
 #      			does not link
-#      build ---> creates an executable named c1m2.out by linking the object 
+#      build ---> creates an executable named c1m2.ut by linking the object 
 #      		  files it also generates the memory map and outputs the size 
 #      		  with the size tool
 #      clean ---> purges .i .o .d .map .s .out files
@@ -205,4 +205,4 @@ $(OUTPUTNAME).out: $(OBJS) $(DEPS)
 .PHONY: clean
 clean:
 	@echo "purging..."
-	rm -f src/$(FILES) *.out *.size *.map
+	rm -f src/*.o src/*.d *.out *.size *.map
