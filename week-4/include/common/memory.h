@@ -170,7 +170,7 @@ int32_t * reserve_words(size_t length);
  * 2. All operations need to be performed using pointer arithmetic, not 
  * array indexing
 */
-void free_words(int32_t * src);
+void free_words(uint32_t * src);
 
 /********************************************************************/
 
