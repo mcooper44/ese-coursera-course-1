@@ -54,14 +54,13 @@ int32_t my_atoi(uint8_t * ptr, uint8_t digits, uint32_t base)
   int8_t negative_flag = 1;
   uint32_t int_value = 0;
   int32_t int_pwr = 0;
-  uint8_t *c_ptr = ptr;
-  uint8_t i =0;
+  int8_t i;
 
-  if(*c_ptr == 0x45)
+  if(*ptr == 0x45)
   {
     negative_flag *= -1;
     digits--;
-    c_ptr++;
+    ptr++;
   }
   for (i = digits-2; i>=0;i--)
   {
