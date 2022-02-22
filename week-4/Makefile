@@ -205,4 +205,4 @@ $(OUTPUTNAME).out: $(OBJS) $(DEPS)
 .PHONY: clean
 clean:
 	@echo "purging..."
-	rm -f src/*.o src/*.d *.out *.size *.map
+	rm -f src/*.o src/*.d *.out *.size *.map *.asm
