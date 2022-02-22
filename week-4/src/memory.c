@@ -86,12 +86,11 @@ uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length)
   return dst;
 }    
 
-uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length){
-  uint8_t *d_pt = dst;
-  uint8_t *s_pt = src;
-  while (length--)
+uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length)
+{
+    for(int8_t i = 0;i<length;i++)
   {
-    *(d_pt++) = *(s_pt++);
+    *(dst+i) = *(src+i);
   }
   return dst;
 }
@@ -112,20 +111,22 @@ uint8_t * my_memzero(uint8_t * src, size_t length)
 
 uint8_t * my_reverse(uint8_t * src, size_t length)
 {
-  uint8_t *temp_buffer;
-  temp_buffer = (uint8_t*) malloc(length * sizeof(uint8_t));
+  uint8_t temp_buffer;
+  uint8_t * src_handler = src;
+  if (*src ==0x45) // skip minus signs - can't use literal "-" tho
+  {
+    src++;
+    length--;
+  }
+    for(uint8_t i=0; i<length/2;i++)
+    {
+      temp_buffer = *(src+i);
+      *(src+i) = *(src+(length-1)-i);
+      *(src+(length-1)-i) = temp_buffer;
+    }
+  return src_handler;
+  }
 
-  for (uint8_t i=0; i<length; i++)
-  {
-    *(temp_buffer+i) = *(src+i);
-  }
-  while (length--)
-  {
-    *(src+length) = *((temp_buffer+length)-(length-1));
-  }
-  free(temp_buffer);
-  return src;
-}
 
 int32_t * reserve_words(size_t length)
 {
