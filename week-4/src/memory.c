@@ -70,7 +70,6 @@ uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length)
     for (int8_t i = 0; i < length; i++)
     {
       *(dst + length-1-i) = *(src+length-1-i);
-      *(src + length-1-i) = 0;
     }
   }
   else

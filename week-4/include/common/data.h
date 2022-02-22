@@ -34,11 +34,11 @@
  * of 5 (including the null terminator).
  * 
  *
- * @param 
- * @param 
- * @param 
+ * @param data = the integer that will be converted
+ * @param *ptr = pointer to where to stash the ascii 
+ * @param base = of the number
  *
- * @return 
+ * @return the length as an integer
  */
 uint8_t my_itoa(int32_t data, uint8_t * ptr, uint32_t base);
 
@@ -47,11 +47,11 @@ uint8_t my_itoa(int32_t data, uint8_t * ptr, uint32_t base);
  *
  * 
  *
- * @param 
- * @param 
- * @param 
+ * @param *ptr to the ascii value
+ * @param digits = number of digits of the ascii 
+ * @param base of the number
  *
- * @return 
+ * @return integer value of the ascii passed in via *ptr
  */
 int32_t my_atoi(uint8_t * ptr, uint8_t digits, uint32_t base);
 #endif
