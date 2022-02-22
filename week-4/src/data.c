@@ -52,7 +52,7 @@ uint8_t my_itoa(int32_t data, uint8_t * ptr, uint32_t base)
 int32_t my_atoi(uint8_t * ptr, uint8_t digits, uint32_t base)
 {
   int8_t negative_flag = 1;
-  uint32_t int_value = 0;
+  int32_t int_value = 0;
   int32_t int_pwr = 0;
   int8_t i;
 
