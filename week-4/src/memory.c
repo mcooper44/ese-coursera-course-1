@@ -61,26 +61,24 @@ void clear_all(char * ptr, unsigned int size)
 // my functions
 uint8_t * my_memmove(uint8_t * src, uint8_t * dst, size_t length)
 {
-  // important to know that we are pointing to the same type
-  // to be compliant with the C standard
-  uint8_t *s_pt = src;
-  uint8_t *d_pt = dst;
-
   // compare the memory addresses - are we going to clobber
-  // bits we are about to try and send? If not proceed forward
-  if (d_pt < s_pt) 
+  // bits we are about to try and send?
+  // move backwards to avoid clobbering bits we are about
+  // to send
+  if ((dst > src) && (dst <= src + length-1))  
   {
-    while (length--)
+    for (int8_t i = 0; i < length; i++)
     {
-      *d_pt++ = *s_pt++;
+      *(dst + length-1-i) = *(src+length-1-i);
+      *(src + length-1-i) = 0;
     }
   }
   else
-  // move backwards to avoid clobbering the bits to send
+  // move forwards 
   {    
-    for(uint8_t i = (length -1); i>0; i--)
+    for(int8_t i = 0; i<length;i++) 
     {
-      *(d_pt+i)= *(s_pt+i);
+      *(dst+i)= *(src+i);
     }
   }
   return dst;
